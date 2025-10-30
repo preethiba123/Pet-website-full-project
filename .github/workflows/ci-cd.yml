@@ -47,6 +47,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Configure kubeconfig
         run: |
           echo "${{ secrets.KUBECONFIG }}" | base64 --decode > kubeconfig
@@ -54,9 +55,9 @@ jobs:
 
       - name: Replace image name
         run: |
-          sed -i "s|REPLACE_WITH_REGISTRY|${{ secrets.DOCKER_USERNAME }}|" kubernetes/deployment.yaml
+          sed -i 's|REPLACE_WITH_REGISTRY|${{ secrets.DOCKER_USERNAME }}|' kubernetes/deployment.yaml
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl --kubeconfig=kubeconfig apply -f kubernetes/deployment.yaml
-          kubectl --kubeconfig=kubeconfig apply -f kubernetes/service.yaml
+          kubectl apply -f kubernetes/deployment.yaml
+          kubectl apply -f kubernetes/service.yaml
