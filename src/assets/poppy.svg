@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="100%" height="100%" fill="#FFF1F2"/>
+  <g transform="translate(20,20)">
+    <circle cx="60" cy="60" r="32" fill="#FCA5A5" />
+    <text x="60" y="132" font-size="16" text-anchor="middle" fill="#9F1239">Poppy</text>
+  </g>
+</svg>

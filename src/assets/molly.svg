@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="100%" height="100%" fill="#FEFDF0"/>
+  <g transform="translate(20,20)">
+    <circle cx="60" cy="60" r="34" fill="#FDE68A" />
+    <text x="60" y="132" font-size="16" text-anchor="middle" fill="#92400E">Molly</text>
+  </g>
+</svg>

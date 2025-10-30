@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="100%" height="100%" fill="#FFFBEB"/>
+  <g transform="translate(20,20)">
+    <ellipse cx="60" cy="56" rx="34" ry="26" fill="#F59E0B" />
+    <text x="60" y="132" font-size="16" text-anchor="middle" fill="#92400E">Simba</text>
+  </g>
+</svg>

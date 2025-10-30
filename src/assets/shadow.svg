@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="100%" height="100%" fill="#F1F5F9"/>
+  <g transform="translate(20,20)">
+    <ellipse cx="60" cy="64" rx="36" ry="22" fill="#94A3B8" />
+    <text x="60" y="132" font-size="16" text-anchor="middle" fill="#0F172A">Shadow</text>
+  </g>
+</svg>
