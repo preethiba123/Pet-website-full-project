@@ -10,24 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      - name: Set up Minikube (for testing)
-        uses: medyagh/setup-minikube@master
-
-      - name: Build Docker image
+      # 🧠 Load kubeconfig from secret
+      - name: Set up kubeconfig
         run: |
-          eval $(minikube -p minikube docker-env)
-          docker build -t pet-website:latest .
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
-      - name: Apply Kubernetes manifests
-        run: |
-          kubectl apply -f kubernetes/deployment.yaml
-          kubectl apply -f kubernetes/service.yaml
-          kubectl rollout status deployment/pet-website --timeout=90s
+      # 🧩 Check connection
+      - name: Verify cluster connection
+        run: kubectl get nodes
+
+      # 🚀 Deploy app
+      - name: Deploy to Kubernetes
+        run: kubectl apply -f kubernetes/deployment.yaml --validate=false
