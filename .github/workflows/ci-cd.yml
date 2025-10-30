@@ -33,29 +33,32 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-
       - name: Build and push Docker image
-        if: github.event_name == 'push'
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: preethibar/pet-website:${{ github.sha }}
+          tags: preethibar/pet-website:latest
 
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-publish
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install kubectl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y kubectl
 
       - name: Configure kubeconfig
         run: |
-          echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
-          export KUBECONFIG=kubeconfig
+          echo "${{ secrets.KUBECONFIG }}" > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
 
-      - name: Replace image name
+      - name: Update image name in deployment.yaml
         run: |
-          sed -i 's|REPLACE_WITH_REGISTRY|${{ secrets.DOCKER_USERNAME }}|' kubernetes/deployment.yaml
+          sed -i "s|REPLACE_WITH_REGISTRY|preethibar/pet-website:latest|g" kubernetes/deployment.yaml
 
       - name: Deploy to Kubernetes
         run: |
