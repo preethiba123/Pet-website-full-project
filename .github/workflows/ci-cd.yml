@@ -37,7 +37,9 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: preethibar/pet-website:${{ github.sha }}
+          tags: |
+            preethibar/pet-website:${{ github.sha }}
+            preethibar/pet-website:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -75,7 +77,9 @@ jobs:
 
       - name: Update image in deployment.yaml
         run: |
-          sed -i "s|REPLACE_WITH_REGISTRY|preethibar/pet-website:${{ github.sha }}|g" kubernetes/deployment.yaml
+          # replace the image line in the manifest with the exact image we just pushed
+          sed -i "s|image: .*|image: preethibar/pet-website:${{ github.sha }}|" kubernetes/deployment.yaml
+          echo "--- deployment after image update ---"
           cat kubernetes/deployment.yaml
 
       - name: Deploy to Kubernetes
