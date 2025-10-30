@@ -37,7 +37,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: preethibar/pet-website:latest
+          tags: preethibar/pet-website:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,20 +47,39 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install kubectl
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
 
-      - name: Configure kubeconfig
+      - name: Configure kubeconfig (auto-decode if base64)
         run: |
-          echo "${{ secrets.KUBECONFIG }}" > kubeconfig
-          export KUBECONFIG=$PWD/kubeconfig
+          set -euo pipefail
+          if echo "${{ secrets.KUBECONFIG }}" | base64 --decode >/dev/null 2>&1; then
+            echo "${{ secrets.KUBECONFIG }}" | base64 --decode > kubeconfig
+          else
+            echo "${{ secrets.KUBECONFIG }}" > kubeconfig
+          fi
+          export KUBECONFIG="$PWD/kubeconfig"
+          chmod 600 kubeconfig
 
-      - name: Update image name in deployment.yaml
+      - name: Ensure manifests exist
         run: |
-          sed -i "s|REPLACE_WITH_REGISTRY|preethibar/pet-website:latest|g" kubernetes/deployment.yaml
+          if [ ! -f kubernetes/deployment.yaml ]; then
+            echo "❌ deployment.yaml not found in kubernetes/ directory" >&2
+            exit 1
+          fi
+          if [ ! -f kubernetes/service.yaml ]; then
+            echo "❌ service.yaml not found in kubernetes/ directory" >&2
+            exit 1
+          fi
+
+      - name: Update image in deployment.yaml
+        run: |
+          sed -i "s|REPLACE_WITH_REGISTRY|preethibar/pet-website:${{ github.sha }}|g" kubernetes/deployment.yaml
+          cat kubernetes/deployment.yaml
 
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f kubernetes/deployment.yaml
           kubectl apply -f kubernetes/service.yaml
+          kubectl rollout status deployment/pet-website-deployment --timeout=60s || true
