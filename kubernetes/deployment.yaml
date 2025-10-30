@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: pet-website
-          image: REPLACE_WITH_REGISTRY/pet-website:latest
+          image: preethibar/pet-website:latest
           ports:
             - containerPort: 3000
           resources:
