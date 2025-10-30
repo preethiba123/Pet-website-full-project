@@ -14,11 +14,12 @@ spec:
     spec:
       containers:
         - name: pet-website
-          image: REPLACE_WITH_REGISTRY/pet-website:latest
+          image: REPLACE_WITH_REGISTRY
+
           ports:
             - containerPort: 3000
           resources:
-            requests:
+            requests: 
               cpu: "100m"
               memory: "128Mi"
             limits:
