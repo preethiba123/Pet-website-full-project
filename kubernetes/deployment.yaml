@@ -3,10 +3,15 @@ kind: Deployment
 metadata:
   name: pet-website
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: pet-website
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
